@@ -298,6 +298,75 @@ nav {
   font-size: 0.88rem; color: var(--text2);
 }
 .steps-list li:last-child { border-bottom: none; }
+  .map-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 10px; padding: 8px 16px;
+    background: rgba(59,130,246,0.12);
+    border: 1px solid rgba(59,130,246,0.3);
+    border-radius: 30px; color: #60a5fa;
+    text-decoration: none; font-size: 0.85rem; font-weight: 600;
+    transition: background 0.2s;
+  }
+  .map-btn:hover { background: rgba(59,130,246,0.22); }
+  .campus-map-section { margin-top: 1.2rem; }
+  .campus-map-header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:0.7rem; }
+  .campus-map-header h4 { font-size:0.85rem; color:var(--text2); font-weight:700; }
+  .building-search {
+    font-family:'Tajawal',sans-serif; font-size:0.8rem;
+    padding:5px 12px; border-radius:20px;
+    border:1px solid var(--border-bright);
+    background:var(--bg3); color:var(--text);
+    outline:none; width:180px; direction:rtl;
+  }
+  .building-search:focus { border-color:var(--green); }
+  .campus-map-wrap { position:relative; margin-bottom:0.7rem; }
+  .campus-map-img {
+    width:100%; border-radius:10px;
+    border:1px solid var(--border);
+    cursor:zoom-in; transition:opacity 0.2s;
+  }
+  .campus-map-img:hover { opacity:0.9; }
+  .map-zoom-hint { font-size:0.7rem; color:var(--text3); text-align:center; margin-top:4px; }
+  .buildings-list {
+    display:grid; grid-template-columns:1fr 1fr;
+    gap:4px; max-height:200px; overflow-y:auto;
+  }
+  .building-item {
+    font-size:0.75rem; color:var(--text2);
+    padding:5px 8px; background:var(--bg3);
+    border-radius:6px; border:1px solid var(--border);
+    line-height:1.3;
+  }
+  .building-item.hidden { display:none; }
+  .majors-table-wrap { overflow-x:auto; }
+  .majors-table {
+    width:100%; border-collapse:collapse;
+    font-size:0.78rem;
+  }
+  .majors-table th {
+    background:var(--bg3); color:var(--text2);
+    padding:7px 10px; text-align:right;
+    font-weight:700; font-size:0.72rem;
+    border-bottom:1px solid var(--border-bright);
+    white-space:nowrap;
+  }
+  .majors-table td {
+    padding:6px 10px; border-bottom:1px solid var(--border);
+    color:var(--text2); vertical-align:middle;
+  }
+  .majors-table .price {
+    color:var(--green); font-weight:700; white-space:nowrap;
+  }
+  .major-row:hover td { background:var(--bg3); }
+  .major-row.hidden { display:none; }
+  #map-fullscreen {
+    display:none; position:fixed; inset:0; z-index:300;
+    background:rgba(0,0,0,0.95);
+    align-items:center; justify-content:center;
+    cursor:zoom-out;
+  }
+  #map-fullscreen.open { display:flex; }
+  #map-fullscreen img { max-width:95vw; max-height:95vh; border-radius:8px; }
 .steps-list li::before {
   content: counter(step);
   min-width: 24px; height: 24px; border-radius: 50%;
@@ -608,14 +677,132 @@ const SERVICES = [
     id:18, icon:'🌱', cat:'أراضي زراعية',
     accentColor:'#84cc16', iconBg:'rgba(132,204,22,0.12)',
     title:'طلب قرض زراعي',
-    desc:'الحصول على قرض لتطوير الأراضي الزراعية وشراء المعدات عبر صندوق الائتمان الزراعي.',
-    location:'صندوق الائتمان الزراعي — الأشرفية، عمّان | فروع المحافظات',
+    desc:'الحصول على قرض لتطوير الأراضي الزراعية وشراء المعدات عبر مؤسسة الإقراض الزراعي الأردنية.',
+    location:'مؤسسة الإقراض الزراعي — العبدلي، عمّان (المديرية العامة) | فروع الشمال: عجلون، بني كنانة، إربد، جرش، الأغوار الشمالية، الكورة، الرمثا، المفرق، البادية الشمالية | فروع الوسط: مادبا، الأغوار الوسطى، السلط، جنوب عمّان، الشونة الجنوبية، غرب عمّان، الزرقاء | فروع الجنوب: العقبة، الكرك، معان، الغور الصافي، المزار الجنوبي، الطفيلة، القصر',
     cost:'مجاني (التقديم) — فائدة مخفضة على القرض',
     duration:'3-6 أسابيع',
     freeService: true,
     docs:['بطاقة وطنية','سند ملكية الأرض الزراعية','خطة المشروع الزراعي','كشف حساب بنكي','شهادة عضوية في جمعية زراعية (إن وجدت)'],
-    steps:['توجه لأقرب فرع لصندوق الائتمان الزراعي','قدّم طلب القرض مع خطة المشروع','يزور مهندس الصندوق الأرض للتقييم','مراجعة الطلب من لجنة الائتمان','إشعار القبول وتوقيع العقد','صرف مبلغ القرض'],
+    steps:['توجه لأقرب فرع لمؤسسة الإقراض الزراعي في محافظتك','قدّم طلب القرض مع خطة المشروع','يزور مهندس المؤسسة الأرض للتقييم','مراجعة الطلب من لجنة الائتمان','إشعار القبول وتوقيع العقد','صرف مبلغ القرض'],
     notes:'تتوفر قروض خاصة للشباب والمرأة الريفية بشروط ميسّرة.'
+  },
+  {
+    id:21, icon:'🏛️', cat:'جامعات حكومية',
+    accentColor:'#3b82f6', iconBg:'rgba(59,130,246,0.12)',
+    title:'الجامعة الأردنية', mapUrl:'https://maps.google.com/?q=31.9837,35.8731',
+    majors:[
+      {name:'طب بشري', mouni:175, mouniForeign:250, unified:15},
+      {name:'طب أسنان', mouni:150, mouniForeign:200, unified:15},
+      {name:'صيدلة', mouni:115, mouniForeign:150, unified:15},
+      {name:'هندسة مدنية', mouni:115, mouniForeign:140, unified:25},
+      {name:'هندسة كهربائية', mouni:115, mouniForeign:140, unified:25},
+      {name:'هندسة ميكانيكية', mouni:115, mouniForeign:140, unified:25},
+      {name:'هندسة حاسوب', mouni:115, mouniForeign:140, unified:25},
+      {name:'علم الحاسوب', mouni:100, mouniForeign:120, unified:20},
+      {name:'تغذية الإنسان والحميات', mouni:85, mouniForeign:110, unified:20},
+      {name:'علم وتكنولوجيا الغذاء', mouni:85, mouniForeign:110, unified:20},
+      {name:'تمريض', mouni:65, mouniForeign:80, unified:15},
+      {name:'علوم حياتية', mouni:60, mouniForeign:70, unified:15},
+      {name:'رياضيات', mouni:60, mouniForeign:70, unified:15},
+      {name:'علم المكتبات والمعلومات', mouni:70, mouniForeign:70, unified:15},
+      {name:'المصارف الإسلامية', mouni:70, mouniForeign:70, unified:15},
+      {name:'إدارة الأعمال', mouni:60, mouniForeign:70, unified:15},
+      {name:'المحاسبة', mouni:60, mouniForeign:70, unified:15},
+      {name:'التسويق', mouni:60, mouniForeign:70, unified:15},
+      {name:'القانون', mouni:55, mouniForeign:60, unified:15},
+      {name:'اللغة العربية وآدابها', mouni:45, mouniForeign:45, unified:15},
+      {name:'اللغة الإنجليزية', mouni:50, mouniForeign:55, unified:15},
+      {name:'فقه وأصوله', mouni:45, mouniForeign:45, unified:15},
+      {name:'التربية الخاصة', mouni:50, mouniForeign:50, unified:15},
+      {name:'علم الاجتماع', mouni:45, mouniForeign:45, unified:15},
+      {name:'التحاليل الطبية', mouni:100, mouniForeign:130, unified:20},
+    ],
+    desc:'أعرق الجامعات الحكومية الأردنية، تأسست عام 1962، وتضم أكثر من 40 كلية وبرنامجاً أكاديمياً.',
+    location:'طريق الجامعة، عمّان | هاتف: 5355000-06 | www.ju.edu.jo',
+    cost:'الساعة الدراسية: 35-80 دينار (حسب التخصص)',
+    duration:'4 سنوات (البكالوريوس)',
+    freeService: false,
+    docs:['شهادة التوجيهي الأصلية','بطاقة وطنية','صور شخصية','إيصال رسوم التسجيل'],
+    steps:['التقديم عبر مركز القبول الموحد في يوليو/أغسطس','انتظار نتائج القبول','مراجعة الجامعة لإتمام التسجيل','دفع الرسوم الدراسية','استلام الجدول الدراسي'],
+    notes:'تتوفر منح وقروض طلابية للمتفوقين وذوي الاحتياج.'
+  },
+  {
+    id:22, icon:'🏛️', cat:'جامعات حكومية',
+    accentColor:'#3b82f6', iconBg:'rgba(59,130,246,0.12)',
+    title:'جامعة العلوم والتكنولوجيا الأردنية', mapUrl:'https://maps.google.com/?q=32.4945,35.9916', campusMap:'just_map.jpg', campusBuildings:['رئاسة الجامعة — D1','دائرة العلاقات العامة والإعلام — A1','عمادة البحث العلمي — A2','وحدة الموارد البشرية — A3','عمادة كلية الطب البيطري — G1','عمادة كلية الدراسات العليا — C5','عمادة كلية الزراعة — M1','قسم الانتاج الحيواني — M1','قسم الانتاج النباتي — C4','قسم الموارد الطبيعية والبيئة — C4','قسم التغذية وتكنولوجيا الغذاء — E1','عمادة كلية الهندسة — E1','قسم الهندسة النووية — E2','قسم الهندسة الكيميائية — CH1','قسم الهندسة المدنية — C2','قسم الهندسة الكهربائية — E2','قسم الهندسة الميكانيكية — M6','قسم هندسة النظم الحيوية — CH1','قسم الهندسة الطبية الحيوية — M2','قسم هندسة الطيران — M5','قسم الهندسة الصناعية — M6','كلية العمارة والتصميم — N2','عمادة كلية تكنولوجيا الحاسوب ونظم المعلومات — C5','قسم هندسة الحاسوب — C6','مركز الحاسوب والمعلومات — M1','المركز الاستشاري للعلوم والتكنولوجيا — M4','مركز الطاقة — N1','مركز الملكة رانيا لعلوم البيئة — G1','مركز تنمية المجتمع المدني — M3','مختبر الانشاءات — 334','مركز الطاقة النووية — 335','مركز التقانات النانوية — 336','مختبر ميكانيكي — 311','مدرج الكرامة — 312','مدرج الفاروق — 313','كفتيريا الطلاب — 314','مدرج صلاح الدين — 315','المشاغل الهندسية — 342','البيت البيئي — 15','بنك القاهرة عمان — 14','مكتب بريد الجامعة','العيادة الطبية','مواقف السيارات'],
+    desc:'من أبرز الجامعات التقنية في الأردن، تأسست عام 1986، تتميز بتخصصات الهندسة والطب.',
+    location:'إربد | هاتف: 7201000-02 | www.just.edu.jo',
+    cost:'الساعة الدراسية: 35-90 دينار (حسب التخصص)',
+    duration:'4-6 سنوات (حسب التخصص)',
+    freeService: false,
+    docs:['شهادة التوجيهي الأصلية','بطاقة وطنية','صور شخصية','إيصال رسوم التسجيل'],
+    steps:['التقديم عبر مركز القبول الموحد','انتظار نتائج القبول','مراجعة الجامعة لإتمام التسجيل','دفع الرسوم الدراسية','استلام الجدول الدراسي'],
+    notes:'تتميز بكليات الطب والهندسة والعلوم التطبيقية.'
+  },
+  {
+    id:23, icon:'🏛️', cat:'جامعات حكومية',
+    accentColor:'#3b82f6', iconBg:'rgba(59,130,246,0.12)',
+    title:'جامعة اليرموك', mapUrl:'https://maps.google.com/?q=32.4891,35.9848',
+    desc:'جامعة حكومية في إربد، تأسست عام 1976، تتميز بكليات الآداب والعلوم والاقتصاد.',
+    location:'إربد | هاتف: 7211111-02 | www.yu.edu.jo',
+    cost:'الساعة الدراسية: 30-70 دينار (حسب التخصص)',
+    duration:'4 سنوات (البكالوريوس)',
+    freeService: false,
+    docs:['شهادة التوجيهي الأصلية','بطاقة وطنية','صور شخصية','إيصال رسوم التسجيل'],
+    steps:['التقديم عبر مركز القبول الموحد','انتظار نتائج القبول','مراجعة الجامعة لإتمام التسجيل','دفع الرسوم الدراسية','استلام الجدول الدراسي'],
+    notes:'تتوفر سكن جامعي للطلاب من خارج إربد.'
+  },
+  {
+    id:24, icon:'🏛️', cat:'جامعات حكومية',
+    accentColor:'#3b82f6', iconBg:'rgba(59,130,246,0.12)',
+    title:'جامعة مؤتة', mapUrl:'https://maps.google.com/?q=31.1817,35.7133',
+    desc:'جامعة حكومية جنوب الأردن، تأسست عام 1981، تضم كليات الهندسة والعلوم الإنسانية والكلية الحربية.',
+    location:'الكرك | هاتف: 2372380-03 | www.mutah.edu.jo',
+    cost:'الساعة الدراسية: 30-70 دينار (حسب التخصص)',
+    duration:'4 سنوات (البكالوريوس)',
+    freeService: false,
+    docs:['شهادة التوجيهي الأصلية','بطاقة وطنية','صور شخصية','إيصال رسوم التسجيل'],
+    steps:['التقديم عبر مركز القبول الموحد','انتظار نتائج القبول','مراجعة الجامعة لإتمام التسجيل','دفع الرسوم الدراسية','استلام الجدول الدراسي'],
+    notes:'تتميز بالكلية الحربية وبرامج الدراسات العسكرية.'
+  },
+  {
+    id:25, icon:'🏛️', cat:'جامعات حكومية',
+    accentColor:'#3b82f6', iconBg:'rgba(59,130,246,0.12)',
+    title:'جامعة الهاشمية', mapUrl:'https://maps.google.com/?q=32.0275,36.0819',
+    desc:'جامعة حكومية في الزرقاء، تأسست عام 1992، تتميز بتخصصات العلوم والتكنولوجيا والأعمال.',
+    location:'الزرقاء | هاتف: 3826600-05 | www.hu.edu.jo',
+    cost:'الساعة الدراسية: 30-65 دينار (حسب التخصص)',
+    duration:'4 سنوات (البكالوريوس)',
+    freeService: false,
+    docs:['شهادة التوجيهي الأصلية','بطاقة وطنية','صور شخصية','إيصال رسوم التسجيل'],
+    steps:['التقديم عبر مركز القبول الموحد','انتظار نتائج القبول','مراجعة الجامعة لإتمام التسجيل','دفع الرسوم الدراسية','استلام الجدول الدراسي'],
+    notes:'تتوفر منح للطلاب المتميزين.'
+  },
+  {
+    id:26, icon:'🏛️', cat:'جامعات حكومية',
+    accentColor:'#3b82f6', iconBg:'rgba(59,130,246,0.12)',
+    title:'جامعة آل البيت', mapUrl:'https://maps.google.com/?q=32.3167,36.2000',
+    desc:'جامعة حكومية في المفرق، تأسست عام 1992، تتميز بالدراسات الإسلامية والإنسانية والعلمية.',
+    location:'المفرق | هاتف: 6297000-02 | www.aabu.edu.jo',
+    cost:'الساعة الدراسية: 28-60 دينار (حسب التخصص)',
+    duration:'4 سنوات (البكالوريوس)',
+    freeService: false,
+    docs:['شهادة التوجيهي الأصلية','بطاقة وطنية','صور شخصية','إيصال رسوم التسجيل'],
+    steps:['التقديم عبر مركز القبول الموحد','انتظار نتائج القبول','مراجعة الجامعة لإتمام التسجيل','دفع الرسوم الدراسية','استلام الجدول الدراسي'],
+    notes:'تتوفر منح للطلاب المتميزين.'
+  },
+  {
+    id:27, icon:'🏛️', cat:'جامعات حكومية',
+    accentColor:'#3b82f6', iconBg:'rgba(59,130,246,0.12)',
+    title:'جامعة البلقاء التطبيقية', mapUrl:'https://maps.google.com/?q=32.0354,35.7278',
+    desc:'أكبر جامعة تطبيقية في الأردن، تأسست عام 1997، تضم كليات تقنية منتشرة في جميع المحافظات.',
+    location:'المقر الرئيسي — السلط | فروع في جميع المحافظات | هاتف: 3530412-05 | www.bau.edu.jo',
+    cost:'الساعة الدراسية: 25-55 دينار (حسب التخصص)',
+    duration:'4 سنوات (البكالوريوس) | سنتان (الدبلوم)',
+    freeService: false,
+    docs:['شهادة التوجيهي أو الدبلوم','بطاقة وطنية','صور شخصية','إيصال رسوم التسجيل'],
+    steps:['التقديم عبر مركز القبول الموحد أو مباشرة للكلية','انتظار نتائج القبول','مراجعة الكلية لإتمام التسجيل','دفع الرسوم الدراسية','استلام الجدول الدراسي'],
+    notes:'تقبل خريجي الدبلوم للالتحاق ببرامج البكالوريوس.'
   },
   {
     id:19, icon:'⚖️', cat:'محاكم وقضاء',
@@ -744,6 +931,21 @@ function openModal(id) {
         <div class="info-item"><div class="lbl">⏱ المدة</div><div class="val">${s.duration}</div></div>
         <div class="info-item" style="grid-column:span 2"><div class="lbl">📍 الموقع</div><div class="val" style="font-size:0.8rem">${s.location}</div></div>
       </div>
+      ${s.mapUrl ? `<a href="${s.mapUrl}" target="_blank" class="map-btn">🗺️ افتح على خريطة Google</a>` : ''}
+    ${s.campusMap ? `
+    <div class="campus-map-section">
+      <div class="campus-map-header">
+        <h4>🏫 مخطط الحرم الجامعي</h4>
+        <input type="text" class="building-search" placeholder="ابحث عن مبنى أو قسم..." oninput="filterBuildings(this.value)" id="bld-search">
+      </div>
+      <div class="campus-map-wrap">
+        <img src="${s.campusMap}" alt="مخطط الجامعة" class="campus-map-img" onclick="openMapFull('${s.campusMap}')">
+        <div class="map-zoom-hint">🔍 اضغط على الخريطة لتكبيرها</div>
+      </div>
+      <div class="buildings-list" id="buildings-list">
+        ${s.campusBuildings.map(b=>`<div class="building-item">${b}</div>`).join('')}
+      </div>
+    </div>` : ''}
     </div>
     <div class="modal-section">
       <h3>📄 الوثائق المطلوبة</h3>
@@ -754,6 +956,32 @@ function openModal(id) {
       <ol class="steps-list">${s.steps.map(st=>`<li>${st}</li>`).join('')}</ol>
     </div>
     ${s.notes?`<div class="modal-section"><h3>💡 ملاحظات مهمة</h3><p>${s.notes}</p></div>`:''}
+    ${s.majors ? `
+    <div class="modal-section">
+      <h3>📚 التخصصات وأسعار الساعة الدراسية</h3>
+      <input type="text" class="building-search" placeholder="ابحث عن تخصص..." oninput="filterMajors(this.value)" style="margin-bottom:10px; width:100%">
+      <div class="majors-table-wrap">
+        <table class="majors-table" id="majors-table">
+          <thead>
+            <tr>
+              <th>التخصص</th>
+              <th>موازي أردني</th>
+              <th>موازي غير أردني</th>
+              <th>قبول موحد / مكرمة</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${s.majors.map(m=>`<tr class="major-row">
+              <td>${m.name}</td>
+              <td class="price">${m.mouni} د.أ</td>
+              <td class="price">${m.mouniForeign} د.أ</td>
+              <td class="price">${m.unified} د.أ</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:0.72rem; color:var(--text3); margin-top:8px">* الأسعار تقريبية وقابلة للتغيير — تحقق من الموقع الرسمي للجامعة</p>
+    </div>` : ''}
   `;
 
   document.getElementById('modal-overlay').classList.add('open');
@@ -775,9 +1003,34 @@ document.getElementById('modal-overlay').addEventListener('click', function(e){
   if(e.target === this){ document.getElementById('modal-overlay').classList.remove('open'); document.body.style.overflow=''; }
 });
 
-document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ document.getElementById('modal-overlay').classList.remove('open'); document.body.style.overflow=''; }});
+document.addEventListener('keydown', e=>{ if(e.key==='Escape'){
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.getElementById('map-fullscreen').classList.remove('open');
+  document.body.style.overflow='';
+}});
+
+function filterMajors(q){
+  document.querySelectorAll('.major-row').forEach(el=>{
+    el.classList.toggle('hidden', !el.cells[0].textContent.includes(q));
+  });
+}
+
+function filterBuildings(q){
+  document.querySelectorAll('.building-item').forEach(el=>{
+    el.classList.toggle('hidden', !el.textContent.includes(q));
+  });
+}
+
+function openMapFull(src){
+  const fs = document.getElementById('map-fullscreen');
+  fs.querySelector('img').src = src;
+  fs.classList.add('open');
+}
 
 init();
 </script>
+<div id="map-fullscreen" onclick="this.classList.remove('open'); document.body.style.overflow='';">
+  <img src="" alt="مخطط الجامعة">
+</div>
 </body>
 </html>
